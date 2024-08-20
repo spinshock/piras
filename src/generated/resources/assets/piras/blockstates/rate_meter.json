@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "piras:block/rate_meter"
+    }
+  }
+}
