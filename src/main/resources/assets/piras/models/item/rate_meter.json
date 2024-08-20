@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "piras:block/rate_meter",
-    "side": "piras:block/rate_meter"
-  }
-}

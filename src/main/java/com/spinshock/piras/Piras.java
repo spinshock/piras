@@ -1,16 +1,6 @@
 package com.spinshock.piras;
 
-import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import org.slf4j.Logger;
-
-import com.mojang.logging.LogUtils;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -22,44 +12,31 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.registries.DeferredRegister;
 
-import com.spinshock.piras.setup.Registration;
+import com.spinshock.piras.registry.PirasRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(Piras.MOD_ID)
 public class Piras {
     public static final String MOD_ID = "piras";
-    private static final Logger LOGGER = LogUtils.getLogger();
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister
-            .create(Registries.CREATIVE_MODE_TAB, MOD_ID);
+    public static final String MOD_NAME = "Piras";
+    public static final Logger LOGGER = LoggerFactory.getLogger(Piras.class);
 
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> PIRAS_TAB = CREATIVE_MODE_TABS
-            .register("piras", () -> CreativeModeTab.builder()
-                    .title(Component.translatable("itemGroup.piras"))
-                    .icon(() -> Registration.RATE_METER_BI.get().getDefaultInstance())
-                    .build());
 
     public Piras(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
-        Registration.init(modEventBus);
-        CREATIVE_MODE_TABS.register(modEventBus);
+        PirasRegistration.init(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
 
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        modContainer.registerConfig(ModConfig.Type.COMMON, PirasConfig.SPEC);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         // Some common setup code
         LOGGER.info("HELLO FROM COMMON SETUP");
-
-        if (Config.logDirtBlock)
-            LOGGER.info("DIRT BLOCK >> {}", BuiltInRegistries.BLOCK.getKey(Blocks.DIRT));
-
-        LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
-
-        Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
     }
 
     @SubscribeEvent
